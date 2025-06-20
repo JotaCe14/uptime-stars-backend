@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Repositories;
@@ -34,6 +33,11 @@ internal sealed class EventRepository(IDbContext dbContext) : IEventRepository
             .OrderByDescending(entity => entity.TimestampUtc)
             .Take(limit)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> IsFirstByMonitorIdAsync(Guid monitorId, CancellationToken cancellationToken = default)
+    {
+        return !await dbContext.Set<Event>().AnyAsync(entity => entity.MonitorId == monitorId, cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default)
