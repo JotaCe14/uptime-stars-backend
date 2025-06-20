@@ -13,6 +13,10 @@ internal sealed class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasDefaultValue(true)
             .IsRequired();
 
+        builder.Property(entity => entity.IsImportant)
+            .HasDefaultValue(false)
+            .IsRequired();
+
         builder.Property(entity => entity.TimestampUtc)
             .IsRequired();
 

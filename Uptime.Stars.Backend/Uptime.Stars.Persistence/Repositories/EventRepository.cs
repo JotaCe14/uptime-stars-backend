@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Repositories;
@@ -17,13 +18,22 @@ internal sealed class EventRepository(IDbContext dbContext) : IEventRepository
         return await dbContext.Set<Event>().FindAsync([id], cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdAsync(Guid monitorId, int limit = 50, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdAsync(Guid monitorId, int limit = 20, CancellationToken cancellationToken = default)
     {
         return await dbContext.Set<Event>()
             .Where(entity => entity.MonitorId == monitorId)
             .OrderByDescending(entity => entity.TimestampUtc)
             .Take(limit)
-            .ToListAsync(cancellationToken);            
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<Event>> GetLastImportantByMonitorIdAsync(Guid monitorId, int limit = 20, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<Event>()
+            .Where(entity => entity.MonitorId == monitorId && entity.IsImportant)
+            .OrderByDescending(entity => entity.TimestampUtc)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default)

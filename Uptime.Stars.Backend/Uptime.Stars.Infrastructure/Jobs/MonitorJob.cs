@@ -33,7 +33,9 @@ internal sealed class MonitorJob(
 
         var checkResult = await checkStrategy.CheckAsync(monitor, cancellationToken);
 
-        var @event = Event.Create(monitor.Id, dateTime.UtcNow, checkResult.IsUp, checkResult.Message, checkResult.LatencyMilliseconds);
+        var isImportant = !checkResult.IsUp || (checkResult.IsUp && !lastCheckIsUp);
+
+        var @event = Event.Create(monitor.Id, dateTime.UtcNow, checkResult.IsUp, isImportant, checkResult.Message, checkResult.LatencyMilliseconds);
 
         monitor.Check(@event.IsUp);
 

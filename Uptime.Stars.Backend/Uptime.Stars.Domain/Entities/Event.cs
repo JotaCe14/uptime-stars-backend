@@ -8,11 +8,13 @@ public class Event : AggregateRoot
         Guid monitorId,
         DateTime timestampUtc,
         bool isUp = true,
+        bool isImportant = false,
         string? message = null,
         long? latencyMilliseconds = null)
     {
         MonitorId = monitorId;
         IsUp = isUp;
+        IsImportant = isImportant;
         Message = message;
         TimestampUtc = timestampUtc;
         LatencyMilliseconds = latencyMilliseconds;
@@ -21,10 +23,11 @@ public class Event : AggregateRoot
         Guid MonitorId, 
         DateTime timestampUtc,
         bool isUp = true,
+        bool isImportant = false,
         string? message = null,
         long? latencyMilliseconds = null)
     {
-        return new Event(MonitorId, timestampUtc, isUp, message, latencyMilliseconds);
+        return new Event(MonitorId, timestampUtc, isUp, isImportant, message, latencyMilliseconds);
     }
 
     public void Update(
@@ -44,6 +47,7 @@ public class Event : AggregateRoot
     public Guid MonitorId { get; private set; }
     public ComponentMonitor? Monitor { get; }
     public bool IsUp { get; private set; } = true;
+    public bool IsImportant { get; set; } = false;
     public long? LatencyMilliseconds { get; private set; }
     public DateTime TimestampUtc { get; private set; } = DateTime.UtcNow;
     public string? Message { get; private set; }

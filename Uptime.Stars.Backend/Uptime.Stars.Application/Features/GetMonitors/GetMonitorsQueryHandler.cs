@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Uptime.Stars.Application.Core.Abstractions.Data;
+﻿using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Messaging;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Application.Services;
@@ -36,7 +35,7 @@ internal sealed class GetMonitorsQueryHandler(
 
         foreach (var monitor in monitors)
         {
-            var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, 20, cancellationToken);
+            var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
             var uptime24h = await eventService.GetUptimePercentageLastSince(
                 monitor.Id,

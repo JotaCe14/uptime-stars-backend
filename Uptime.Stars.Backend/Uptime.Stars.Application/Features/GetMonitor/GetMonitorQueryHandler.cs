@@ -22,7 +22,7 @@ internal sealed class GetMonitorQueryHandler(
             return Result.Failure<MonitorResponse>(Error.Failure("GetMonitor.Handle", "Monitor not found"));
         }
 
-        var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
+        var lastEvents = await eventRepository.GetLastImportantByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
         var uptime24h = await eventService.GetUptimePercentageLastSince(
             monitor.Id, 
