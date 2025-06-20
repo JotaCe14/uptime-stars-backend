@@ -24,6 +24,7 @@ internal sealed class GetMonitorsQueryHandler(
                     Name = monitor.Name,
                     Description = monitor.Description ?? "",
                     GroupId = monitor.GroupId,
+                    IsUp = monitor.IsUp,
                     Target = monitor.Target,
                     CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
                     IsActive = monitor.IsActive,
