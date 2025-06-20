@@ -11,6 +11,7 @@ using Uptime.Stars.Application.Features.EnableMonitor;
 using Uptime.Stars.Application.Features.GetMonitor;
 using Uptime.Stars.Application.Features.GetMonitors;
 using Uptime.Stars.Application.Features.RemoveMonitor;
+using Uptime.Stars.Application.Features.UpdateMonitor;
 using Uptime.Stars.Contracts.Monitor;
 
 namespace Uptime.Stars.Api.Endpoints;
@@ -26,6 +27,20 @@ public class MonitorEndpoint : IEndpoint
             .WithTags("creation")
             .AddEndpointFilter<ValidationFilter<MonitorRequest>>()
             .Produces<Guid>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status409Conflict)
+            .Produces<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status424FailedDependency)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+
+        app
+            .MapPatch("monitor/{monitorId:guid}", UpdateMonitor)
+            .WithName("Update Monitor")
+            .WithSummary("Updates a monitor")
+            .WithTags("update")
+            .AddEndpointFilter<ValidationFilter<MonitorRequest>>()
+            .Produces(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict)
@@ -107,6 +122,17 @@ public class MonitorEndpoint : IEndpoint
         var result = await sender.Send(request.Adapt<CreateMonitorCommand>(), cancellationToken);
         if (result.IsFailure) return Results.Problem(result.Error.ToProblemDetails());
         return Results.Ok(result.Value);
+    }
+
+    public async Task<IResult> UpdateMonitor(
+        MonitorRequest request,
+        Guid monitorId,
+        ISender sender,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await sender.Send(request.Adapt<UpdateMonitorCommand>() with { Id = monitorId }, cancellationToken);
+        if (result.IsFailure) return Results.Problem(result.Error.ToProblemDetails());
+        return Results.Ok();
     }
 
     public async Task<IResult> GetMonitor(

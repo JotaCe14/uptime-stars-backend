@@ -1,5 +1,4 @@
 ﻿using Uptime.Stars.Domain.Core.Primitives;
-using Uptime.Stars.Domain.DomainEvents.Monitor;
 using Uptime.Stars.Domain.Enums;
 
 namespace Uptime.Stars.Domain.Entities;
@@ -78,6 +77,39 @@ public class ComponentMonitor : AggregateRoot
             alertResendCycles
         );
     }
+
+    public void Update(
+        string name,
+        string description,
+        MonitorType type,
+        string target,
+        string[] requestHeaders,
+        string[] alertEmails,
+        Guid? groupId = null,
+        int intervalInMinutes = 1,
+        int timeoutInMilliseconds = 10000,
+        TextSearchMode? searchMode = null,
+        string? expectedText = null,
+        string? alertMessage = "",
+        int alertDelayMinutes = 0,
+        int alertResendCycles = 3)
+    {
+        Name = name;
+        Description = description;
+        GroupId = groupId;
+        Type = type;
+        Target = target;
+        RequestHeaders = requestHeaders;
+        AlertEmails = alertEmails;
+        IntervalInMinutes = intervalInMinutes;
+        TiemoutInMilliseconds = timeoutInMilliseconds;
+        SearchMode = searchMode;
+        ExpectedText = expectedText;
+        AlertMessage = alertMessage;
+        AlertDelayMinutes = alertDelayMinutes;
+        AlertResendCycles = alertResendCycles;
+    }
+
     public void Disable()
     {
         IsActive = false;
