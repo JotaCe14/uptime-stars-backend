@@ -19,7 +19,7 @@ public class EventServiceTests
     }
 
     [Fact]
-    public async Task GetUptimePercentageLastSince_Returns100_WhenNoEvents()
+    public async Task GetUptimePercentageLastSince_ReturnsNull_WhenNoEvents()
     {
         // Arrange
 
@@ -35,7 +35,7 @@ public class EventServiceTests
 
         // Assert
         
-        result.Should().Be(100);
+        result.Should().BeNull();
     }
 
     [Fact]

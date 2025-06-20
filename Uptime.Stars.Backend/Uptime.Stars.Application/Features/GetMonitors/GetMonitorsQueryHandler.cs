@@ -55,9 +55,9 @@ internal sealed class GetMonitorsQueryHandler(
                         @event.TicketId ?? "",
                         @event.MaintenanceType ?? "")).ToList();
 
-            monitor.Uptime24hPercentage = uptime24h.ToString("0.##") + "%";
+            monitor.Uptime24hPercentage = uptime24h.HasValue ? uptime24h.Value.ToString("0.##") + "%" : "";
 
-            monitor.Uptime30dPercentage = uptime30d.ToString("0.##") + "%";
+            monitor.Uptime30dPercentage = uptime30d.HasValue ? uptime30d.Value.ToString("0.##") + "%": "";
         }
 
         return monitors;
