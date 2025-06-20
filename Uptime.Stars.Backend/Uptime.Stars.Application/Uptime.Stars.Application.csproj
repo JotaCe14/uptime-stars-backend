@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
+    <PackageReference Include="SerilogTimings" Version="3.1.0" />
+    <PackageReference Include="X.PagedList.EF" Version="10.5.7" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<InternalsVisibleTo Include="Uptime.Stars.UnitTests" />
+	<ProjectReference Include="..\Uptime.Stars.Contracts\Uptime.Stars.Contracts.csproj" />
+    <ProjectReference Include="..\Uptime.Stars.Domain\Uptime.Stars.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

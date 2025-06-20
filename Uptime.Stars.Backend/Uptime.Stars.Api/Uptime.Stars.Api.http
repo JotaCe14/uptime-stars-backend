@@ -1,0 +1,6 @@
+@Uptime.Stars.Api_HostAddress = http://localhost:5034
+
+GET {{Uptime.Stars.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.8.20" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<InternalsVisibleTo Include="Uptime.Stars.UnitTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    <ProjectReference Include="..\Uptime.Stars.Application\Uptime.Stars.Application.csproj" />
+  </ItemGroup>
+
+</Project>
