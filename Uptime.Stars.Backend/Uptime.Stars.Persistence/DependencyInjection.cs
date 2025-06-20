@@ -17,6 +17,7 @@ public static class DependencyInjection
             .AddHangfire(configuration => configuration.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)))
             .AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>())
             .AddScoped<IUnitOfWork>(serviceProvicer => serviceProvicer.GetRequiredService<ApplicationDbContext>())
+            .AddScoped<IGroupRepository, GroupRepository>()
             .AddScoped<IMonitorRepository, MonitorRepository>()
             .AddScoped<IEventRepository, EventRepository>();
     }

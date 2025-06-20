@@ -1,4 +1,5 @@
-﻿using Uptime.Stars.Application.Core.Abstractions.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Messaging;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Application.Services;
@@ -22,6 +23,7 @@ internal sealed class GetMonitorsQueryHandler(
                     Id = monitor.Id,
                     Name = monitor.Name,
                     Description = monitor.Description ?? "",
+                    GroupId = monitor.GroupId,
                     Target = monitor.Target,
                     CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
                     IsActive = monitor.IsActive,
