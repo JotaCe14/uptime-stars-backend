@@ -21,9 +21,5 @@
 	<ProjectReference Include="..\Uptime.Stars.Contracts\Uptime.Stars.Contracts.csproj" />
     <ProjectReference Include="..\Uptime.Stars.Domain\Uptime.Stars.Domain.csproj" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Features\NewFolder\" />
-  </ItemGroup>
 
 </Project>

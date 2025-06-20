@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Uptime.Stars.Contracts.Monitor;
+namespace Uptime.Stars.Contracts.Monitors;
 public class MonitorRequest
 {
     [Required]

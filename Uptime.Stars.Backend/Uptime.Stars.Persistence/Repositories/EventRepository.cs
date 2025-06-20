@@ -12,7 +12,12 @@ internal sealed class EventRepository(IDbContext dbContext) : IEventRepository
         await dbContext.Set<Event>().AddAsync(@event, cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<Event>> GetLastByIdAsync(Guid monitorId, int limit = 50, CancellationToken cancellationToken = default)
+    public async Task<Event?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<Event>().FindAsync([id], cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdAsync(Guid monitorId, int limit = 50, CancellationToken cancellationToken = default)
     {
         return await dbContext.Set<Event>()
             .Where(entity => entity.MonitorId == monitorId)
@@ -21,7 +26,7 @@ internal sealed class EventRepository(IDbContext dbContext) : IEventRepository
             .ToListAsync(cancellationToken);            
     }
 
-    public async Task<IReadOnlyCollection<Event>> GetLastByIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default)
     {
         return await dbContext.Set<Event>()
             .Where(entity => entity.MonitorId == monitorId && entity.TimestampUtc >= sinceDateTime)

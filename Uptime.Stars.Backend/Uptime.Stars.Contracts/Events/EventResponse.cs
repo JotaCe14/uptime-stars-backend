@@ -1,6 +1,7 @@
-﻿namespace Uptime.Stars.Contracts.Monitor;
+﻿namespace Uptime.Stars.Contracts.Events;
 
 public record EventResponse(
+    Guid Id,
     string TimestampUtc,
     bool IsUp,
     string Message,

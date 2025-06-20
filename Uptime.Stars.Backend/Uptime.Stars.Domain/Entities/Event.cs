@@ -26,6 +26,22 @@ public class Event : AggregateRoot
     {
         return new Event(MonitorId, timestampUtc, isUp, message, latencyMilliseconds);
     }
+
+    public void Update(
+        bool falsePositive = false,
+        string? category = "",
+        string? note = "",
+        string? ticketId = "",
+        string? maintenanceType = "")
+    {
+        FalsePositive = falsePositive;
+        Category = category;
+        Note = note;
+        TicketId = ticketId;
+        MaintenanceType = maintenanceType;
+        TimestampUtc = DateTime.UtcNow;
+    }
+
     public Guid MonitorId { get; private set; }
     public ComponentMonitor? Monitor { get; }
     public bool IsUp { get; private set; } = true;

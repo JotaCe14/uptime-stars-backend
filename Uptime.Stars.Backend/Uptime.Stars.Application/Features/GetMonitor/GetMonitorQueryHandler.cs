@@ -1,7 +1,8 @@
 ﻿using Uptime.Stars.Application.Core.Abstractions.Messaging;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Application.Services;
-using Uptime.Stars.Contracts.Monitor;
+using Uptime.Stars.Contracts.Events;
+using Uptime.Stars.Contracts.Monitors;
 using Uptime.Stars.Domain.Core.Primitives;
 using Uptime.Stars.Domain.Core.Primitives.Result;
 using Uptime.Stars.Domain.Repositories;
@@ -21,7 +22,7 @@ internal sealed class GetMonitorQueryHandler(
             return Result.Failure<MonitorResponse>(Error.Failure("GetMonitor.Handle", "Monitor not found"));
         }
 
-        var lastEvents = await eventRepository.GetLastByIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
+        var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
         var uptime24h = await eventService.GetUptimePercentageLastSince(
             monitor.Id, 
@@ -42,6 +43,7 @@ internal sealed class GetMonitorQueryHandler(
             CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
             IsActive = monitor.IsActive,
             LastEvents = lastEvents.Select(@event => new EventResponse(
+                @event.Id,
                 @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                 @event.IsUp,
                 @event.Message ?? "",

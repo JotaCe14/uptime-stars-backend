@@ -26,7 +26,7 @@ public class EventServiceTests
         _dateTime.UtcNow.Returns(DateTime.UtcNow);
         
         _eventRepository
-            .GetLastByIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
+            .GetLastByMonitorIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs([]);
 
         // Act
@@ -52,7 +52,7 @@ public class EventServiceTests
         _dateTime.UtcNow.Returns(DateTime.UtcNow);
 
         _eventRepository
-            .GetLastByIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
+            .GetLastByMonitorIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(events);
 
         // Act
@@ -80,7 +80,7 @@ public class EventServiceTests
         _dateTime.UtcNow.Returns(DateTime.UtcNow);
 
         _eventRepository
-            .GetLastByIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
+            .GetLastByMonitorIdSinceAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(events);
 
         // Act

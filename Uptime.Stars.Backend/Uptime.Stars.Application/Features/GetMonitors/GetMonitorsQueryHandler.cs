@@ -2,7 +2,8 @@
 using Uptime.Stars.Application.Core.Abstractions.Messaging;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Application.Services;
-using Uptime.Stars.Contracts.Monitor;
+using Uptime.Stars.Contracts.Events;
+using Uptime.Stars.Contracts.Monitors;
 using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Repositories;
 using X.PagedList;
@@ -32,7 +33,7 @@ internal sealed class GetMonitorsQueryHandler(
 
         foreach (var monitor in monitors)
         {
-            var lastEvents = await eventRepository.GetLastByIdAsync(monitor.Id, 20, cancellationToken);
+            var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, 20, cancellationToken);
 
             var uptime24h = await eventService.GetUptimePercentageLastSince(
                 monitor.Id,
@@ -45,6 +46,7 @@ internal sealed class GetMonitorsQueryHandler(
                 cancellationToken);
 
             monitor.LastEvents = lastEvents.Select(@event => new EventResponse(
+                        @event.Id,
                         @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                         @event.IsUp,
                         @event.Message ?? "",

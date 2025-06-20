@@ -17,7 +17,7 @@ internal sealed class AlertJob(
             return;
         }
 
-        var lastEvents = await eventRepository.GetLastByIdAsync(monitorId, 1, cancellationToken);
+        var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitorId, 1, cancellationToken);
 
         var lastEvent = lastEvents.FirstOrDefault();
 
@@ -42,7 +42,7 @@ internal sealed class AlertJob(
             return;
         }
 
-        var lastEvents = await eventRepository.GetLastByIdAsync(monitorId, 1, cancellationToken);
+        var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitorId, 1, cancellationToken);
 
         var lastEvent = lastEvents.FirstOrDefault();
 

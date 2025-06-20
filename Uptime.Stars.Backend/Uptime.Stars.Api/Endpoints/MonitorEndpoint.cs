@@ -12,7 +12,7 @@ using Uptime.Stars.Application.Features.GetMonitor;
 using Uptime.Stars.Application.Features.GetMonitors;
 using Uptime.Stars.Application.Features.RemoveMonitor;
 using Uptime.Stars.Application.Features.UpdateMonitor;
-using Uptime.Stars.Contracts.Monitor;
+using Uptime.Stars.Contracts.Monitors;
 
 namespace Uptime.Stars.Api.Endpoints;
 

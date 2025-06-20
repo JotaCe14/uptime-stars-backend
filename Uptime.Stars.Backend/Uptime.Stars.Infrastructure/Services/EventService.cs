@@ -9,7 +9,7 @@ internal sealed class EventService(IDateTime dateTime, IEventRepository eventRep
     {
         var sinceDateTime = dateTime.UtcNow - timeSpan;
 
-        var events = await eventRepository.GetLastByIdSinceAsync(monitorId, sinceDateTime, cancellationToken);
+        var events = await eventRepository.GetLastByMonitorIdSinceAsync(monitorId, sinceDateTime, cancellationToken);
 
         if (events.Count == 0)
         {

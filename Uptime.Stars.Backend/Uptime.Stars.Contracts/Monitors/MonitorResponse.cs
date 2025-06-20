@@ -1,4 +1,6 @@
-﻿namespace Uptime.Stars.Contracts.Monitor;
+﻿using Uptime.Stars.Contracts.Events;
+
+namespace Uptime.Stars.Contracts.Monitors;
 
 public class MonitorResponse
 {
