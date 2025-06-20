@@ -7,7 +7,7 @@ using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Enums;
 using Uptime.Stars.Infrastructure.Strategies.Implementations;
 
-namespace Uptime.Stars.UnitTests.Infrastructure;
+namespace Uptime.Stars.UnitTests.Infrastructure.Strategies;
 
 public class PingCheckStrategyTests
 {
@@ -50,7 +50,7 @@ public class PingCheckStrategyTests
         var result = await _strategy.CheckAsync(monitor);
 
         // Assert
-        
+
         result.IsUp.Should().BeTrue();
         result.LatencyMilliseconds.Should().Be(42);
     }
@@ -61,7 +61,7 @@ public class PingCheckStrategyTests
         // Arrange
 
         var monitor = GetMonitor();
-        
+
         _pingWrapper.SendPingAsync(Arg.Any<string>(), Arg.Any<int>())
             .ReturnsNullForAnyArgs();
 
@@ -81,7 +81,7 @@ public class PingCheckStrategyTests
         // Arrange
 
         var monitor = GetMonitor();
-        
+
         _pingWrapper.SendPingAsync(Arg.Any<string>(), Arg.Any<int>())
             .ThrowsAsyncForAnyArgs(new Exception("Ping failed"));
 
@@ -90,7 +90,7 @@ public class PingCheckStrategyTests
         var result = await _strategy.CheckAsync(monitor);
 
         // Assert
-        
+
         result.IsUp.Should().BeFalse();
         result.Message.Should().Contain("Ping failed");
     }

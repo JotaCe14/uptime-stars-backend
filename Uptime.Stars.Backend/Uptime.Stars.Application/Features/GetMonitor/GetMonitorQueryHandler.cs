@@ -50,7 +50,7 @@ internal sealed class GetMonitorQueryHandler(
                 @event.Note ?? "",
                 @event.TicketId ?? "",
                 @event.MaintenanceType ?? "")).ToList(),
-            uptime24h,
-            uptime30d);
+            uptime24h.ToString("0.##") + "%",
+            uptime30d.ToString("0.##") + "%");
     }
 }

@@ -9,7 +9,7 @@ using Uptime.Stars.Domain.Repositories;
 using Uptime.Stars.Infrastructure.Jobs;
 using Uptime.Stars.Infrastructure.Strategies;
 
-namespace Uptime.Stars.UnitTests.Infrastructure;
+namespace Uptime.Stars.UnitTests.Infrastructure.Jobs;
 
 public class MonitorJobTests
 {
@@ -48,7 +48,7 @@ public class MonitorJobTests
     public async Task ExecuteAsync_DoesNothing_WhenMonitorNotFound()
     {
         // Arrange
-        
+
         _monitorRepository
             .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .ReturnsNullForAnyArgs();
@@ -58,7 +58,7 @@ public class MonitorJobTests
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
-        
+
         _strategyFactory.DidNotReceiveWithAnyArgs().GetStrategy(Arg.Any<MonitorType>());
         await _eventRepository.DidNotReceiveWithAnyArgs().AddAsync(Arg.Any<Event>(), Arg.Any<CancellationToken>());
         await _unitOfWork.DidNotReceiveWithAnyArgs().SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -68,7 +68,7 @@ public class MonitorJobTests
     public async Task ExecuteAsync_DoesNothing_WhenMonitorIsInactive()
     {
         // Arrange
-        
+
         var monitor = GetMonitor();
 
         monitor.Disable();

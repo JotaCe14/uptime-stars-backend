@@ -20,6 +20,8 @@ internal sealed class EventService(IDateTime dateTime, IEventRepository eventRep
 
         var uptimeEvents = events.Count(@event => @event.IsUp);
 
-        return decimal.Round(uptimeEvents / totalEvents, 2);
+        var percentage = decimal.Round((decimal)uptimeEvents / totalEvents * 100, 2);
+
+        return percentage;
     }
 }

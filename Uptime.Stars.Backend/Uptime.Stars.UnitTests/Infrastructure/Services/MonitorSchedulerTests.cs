@@ -3,7 +3,7 @@ using NSubstitute;
 using Uptime.Stars.Infrastructure.Jobs;
 using Uptime.Stars.Infrastructure.Services;
 
-namespace Uptime.Stars.UnitTests.Infrastructure;
+namespace Uptime.Stars.UnitTests.Infrastructure.Services;
 
 public class MonitorSchedulerTests
 {
@@ -24,7 +24,7 @@ public class MonitorSchedulerTests
         int interval = 5;
 
         // Act
-        
+
         await _scheduler.ScheduleAsync(monitorId, interval, CancellationToken.None);
 
         // Assert
@@ -43,7 +43,7 @@ public class MonitorSchedulerTests
         var monitorId = Guid.NewGuid();
 
         // Act
-        
+
         await _scheduler.ScheduleAsync(monitorId, 0, CancellationToken.None);
 
         // Assert

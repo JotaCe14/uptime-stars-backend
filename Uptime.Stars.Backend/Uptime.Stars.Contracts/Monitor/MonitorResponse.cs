@@ -7,5 +7,5 @@ public record MonitorResponse(
     string CreatedAtUtc,
     bool IsActive,
     IReadOnlyCollection<EventResponse> LastEvents,
-    decimal Uptime24h,
-    decimal Uptime30d);
+    string Uptime24hPercentage,
+    string Uptime30dPercentage);

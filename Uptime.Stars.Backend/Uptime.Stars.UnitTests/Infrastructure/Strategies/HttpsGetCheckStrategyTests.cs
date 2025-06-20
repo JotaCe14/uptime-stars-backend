@@ -8,7 +8,7 @@ using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Enums;
 using Uptime.Stars.Infrastructure.Strategies.Implementations;
 
-namespace Uptime.Stars.UnitTests.Infrastructure;
+namespace Uptime.Stars.UnitTests.Infrastructure.Strategies;
 
 public class HttpsGetCheckStrategyTests
 {
@@ -108,7 +108,7 @@ public class HttpsGetCheckStrategyTests
         // Assert
 
         result.IsUp.Should().BeFalse();
-        result.Message.Should().Contain($"Failed with status code: {(int) response.StatusCode}");
+        result.Message.Should().Contain($"Failed with status code: {(int)response.StatusCode}");
     }
 
     [Fact]
