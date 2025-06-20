@@ -40,7 +40,7 @@ public class ComponentMonitor : AggregateRoot
         AlertDelayMinutes = alertDelayMinutes;
         AlertResendCycles = alertResendCycles;
 
-        AddDomainEvent(new MonitorCreatedDomainEvent(Id, IntervalInMinutes));
+        //AddDomainEvent(new MonitorCreatedDomainEvent(Id, IntervalInMinutes));
     }
 
     public static ComponentMonitor Create(
@@ -82,6 +82,10 @@ public class ComponentMonitor : AggregateRoot
     public void Disable()
     {
         IsActive = false;
+    }
+    public void Enable()
+    {
+        IsActive = true;
     }
 
     public string Name { get; private set; }

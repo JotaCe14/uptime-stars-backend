@@ -6,6 +6,8 @@ using Uptime.Stars.Persistence;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+builder.Logging.AddConsole();
+
 builder.Services.AddApplicationServices();
 
 builder.Services.AddInfrastructureServices();

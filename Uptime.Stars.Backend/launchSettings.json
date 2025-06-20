@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "uptime.stars.api": "StartDebugging",
+        "uptime.stars.monitor": "StartDebugging"
+      }
+    }
+  }
+}

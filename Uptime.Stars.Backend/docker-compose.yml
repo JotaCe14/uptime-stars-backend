@@ -1,0 +1,67 @@
+version: '3.4'
+
+services:
+  uptime.stars.api:
+    image: ${DOCKER_REGISTRY-}uptimestarsapi
+    build:
+      context: .
+      dockerfile: Uptime.Stars.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Uptime: Host=postgres;Port=5432;Database=uptime_db;Username=uptime_user;Password=uptime_pass
+    depends_on:
+      - postgres
+      - uptime.stars.monitor
+
+  uptime.stars.monitor:
+    image: ${DOCKER_REGISTRY-}uptimestarsmonitor
+    build:
+      context: .
+      dockerfile: Uptime.Stars.Monitor/Dockerfile
+    environment:
+      ConnectionStrings__Uptime: Host=postgres;Port=5432;Database=uptime_db;Username=uptime_user;Password=uptime_pass
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: uptime_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: uptime_user
+      POSTGRES_PASSWORD: uptime_pass
+      POSTGRES_DB: uptime_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uptime_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: uptime_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@uptime.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  postgres_data:

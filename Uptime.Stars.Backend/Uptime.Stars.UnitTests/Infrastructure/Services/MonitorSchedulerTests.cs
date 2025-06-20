@@ -54,4 +54,21 @@ public class MonitorSchedulerTests
             "* */1 * * * *"
         );
     }
+
+    [Fact]
+    public async Task RemoveAsync_DeletesJobIfExists()
+    {
+        // Arrange
+
+        var monitorId = Guid.NewGuid();
+
+        // Act
+
+        await _scheduler.RemoveAsync(monitorId, CancellationToken.None);
+
+        // Assert
+
+        _jobManager.ReceivedWithAnyArgs(1).RemoveIfExists($"monitor-{monitorId}");
+
+    }
 }

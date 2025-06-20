@@ -33,14 +33,15 @@ internal sealed class GetMonitorQueryHandler(
             TimeSpan.FromDays(30),
             cancellationToken);
 
-        return new MonitorResponse(
-            monitor.Id,
-            monitor.Name,
-            monitor.Description ?? "",
-            monitor.Target,
-            monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
-            monitor.IsActive,
-            lastEvents.Select(@event => new EventResponse(
+        return new MonitorResponse
+        {
+            Id = monitor.Id,
+            Name = monitor.Name,
+            Description = monitor.Description ?? "",
+            Target = monitor.Target,
+            CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
+            IsActive = monitor.IsActive,
+            LastEvents = lastEvents.Select(@event => new EventResponse(
                 @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                 @event.IsUp,
                 @event.Message ?? "",
@@ -50,7 +51,8 @@ internal sealed class GetMonitorQueryHandler(
                 @event.Note ?? "",
                 @event.TicketId ?? "",
                 @event.MaintenanceType ?? "")).ToList(),
-            uptime24h.ToString("0.##") + "%",
-            uptime30d.ToString("0.##") + "%");
+            Uptime24hPercentage = uptime24h.ToString("0.##") + "%",
+            Uptime30dPercentage = uptime30d.ToString("0.##") + "%"
+        };
     }
 }

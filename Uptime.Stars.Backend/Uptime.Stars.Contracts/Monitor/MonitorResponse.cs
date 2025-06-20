@@ -1,11 +1,14 @@
 ﻿namespace Uptime.Stars.Contracts.Monitor;
-public record MonitorResponse(
-    Guid Id,
-    string Name,
-    string Description,
-    string Target,
-    string CreatedAtUtc,
-    bool IsActive,
-    IReadOnlyCollection<EventResponse> LastEvents,
-    string Uptime24hPercentage,
-    string Uptime30dPercentage);
+
+public class MonitorResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string Target { get; set; } = "";
+    public string CreatedAtUtc { get; set; } = "";
+    public bool IsActive { get; set; }
+    public IReadOnlyCollection<EventResponse>? LastEvents { get; set; }
+    public string Uptime24hPercentage { get; set; } = "";
+    public string Uptime30dPercentage { get; set; } = "";
+}

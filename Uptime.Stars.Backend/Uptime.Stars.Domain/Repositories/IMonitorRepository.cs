@@ -5,4 +5,5 @@ public interface IMonitorRepository
 {
     Task AddAsync(ComponentMonitor monitor, CancellationToken cancellationToken = default);
     Task<ComponentMonitor?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

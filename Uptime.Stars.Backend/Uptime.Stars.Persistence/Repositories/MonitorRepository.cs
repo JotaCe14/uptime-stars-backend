@@ -1,4 +1,5 @@
-﻿using Uptime.Stars.Application.Core.Abstractions.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Repositories;
 
@@ -8,6 +9,13 @@ internal sealed class MonitorRepository(IDbContext dbContext) : IMonitorReposito
     public async Task AddAsync(ComponentMonitor monitor, CancellationToken cancellationToken = default)
     {
         await dbContext.Set<ComponentMonitor>().AddAsync(monitor, cancellationToken);
+    }
+
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await dbContext.Set<ComponentMonitor>()
+            .Where(m => m.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
     }
 
     public async Task<ComponentMonitor?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
