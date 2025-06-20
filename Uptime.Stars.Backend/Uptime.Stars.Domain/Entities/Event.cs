@@ -39,7 +39,6 @@ public class Event : AggregateRoot
         Note = note;
         TicketId = ticketId;
         MaintenanceType = maintenanceType;
-        TimestampUtc = DateTime.UtcNow;
     }
 
     public Guid MonitorId { get; private set; }
