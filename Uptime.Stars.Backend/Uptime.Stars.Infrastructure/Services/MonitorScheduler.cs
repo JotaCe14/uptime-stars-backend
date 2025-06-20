@@ -23,7 +23,7 @@ internal sealed class MonitorScheduler(IRecurringJobManager jobManager) : IMonit
         jobManager.AddOrUpdate<MonitorJob>(
            jobId,
            job => job.ExecuteAsync(monitorId, CancellationToken.None),
-           $"* */{intervalInMinutes} * * * *"
+           $"*/{intervalInMinutes} * * * *"
         );
 
         return Task.CompletedTask;

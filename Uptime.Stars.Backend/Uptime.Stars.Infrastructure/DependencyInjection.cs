@@ -16,8 +16,11 @@ public static class DependencyInjection
         services.AddHttpClient<HttpsGetCheckStrategy>();
 
         return services
+            .AddScoped<IAlertService, SmtpAlertService>()
             .AddScoped<IEventService, EventService>()
+            .AddScoped<IAlertScheduler, AlertScheduler>()
             .AddScoped<IMonitorScheduler, MonitorScheduler>()
+            .AddScoped<AlertJob>()
             .AddScoped<MonitorJob>()
             .AddScoped<ICheckStrategyFactory, CheckStrategyFactory>()
             .AddScoped<IPingWrapper, PingWrapper>()

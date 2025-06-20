@@ -21,6 +21,8 @@ services:
       dockerfile: Uptime.Stars.Monitor/Dockerfile
     environment:
       ConnectionStrings__Uptime: Host=postgres;Port=5432;Database=uptime_db;Username=uptime_user;Password=uptime_pass
+      MailSettings__Host: mailhog
+      MailSettings__Port: 1025
     depends_on:
       postgres:
         condition: service_healthy

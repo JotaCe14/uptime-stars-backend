@@ -1,8 +1,10 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Time;
+using Uptime.Stars.Application.Services;
 using Uptime.Stars.Domain.Entities;
 using Uptime.Stars.Domain.Enums;
 using Uptime.Stars.Domain.Repositories;
@@ -19,11 +21,13 @@ public class MonitorJobTests
     private readonly IMonitorRepository _monitorRepository = Substitute.For<IMonitorRepository>();
     private readonly IEventRepository _eventRepository = Substitute.For<IEventRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IAlertScheduler _alertScheduler = Substitute.For<IAlertScheduler>();
+    private readonly ILogger<MonitorJob> _logger = Substitute.For<ILogger<MonitorJob>>();
     private readonly MonitorJob _job;
 
     public MonitorJobTests()
     {
-        _job = new MonitorJob(_strategyFactory, _dateTime, _monitorRepository, _eventRepository, _unitOfWork);
+        _job = new MonitorJob(_strategyFactory, _dateTime, _monitorRepository, _eventRepository, _unitOfWork, _alertScheduler, _logger);
     }
 
     private static ComponentMonitor GetMonitor(
