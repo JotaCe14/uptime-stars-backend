@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddHttpClient<HttpsGetCheckStrategy>();
 
         return services
+            .AddScoped<IReportService, ReportService>()
             .AddScoped<IAlertService, SmtpAlertService>()
             .AddScoped<IEventService, EventService>()
             .AddScoped<IAlertScheduler, AlertScheduler>()
