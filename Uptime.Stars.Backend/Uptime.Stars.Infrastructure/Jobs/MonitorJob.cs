@@ -29,7 +29,7 @@ internal sealed class MonitorJob(
 
         var checkResult = await checkStrategy.CheckAsync(monitor, cancellationToken);
 
-        var isImportant = !checkResult.IsUp || (checkResult.IsUp && !lastCheckIsUp) || await eventRepository.IsFirstByMonitorIdAsync(monitor.Id, cancellationToken);
+        var isImportant = !lastCheckIsUp.HasValue || !checkResult.IsUp || (checkResult.IsUp && !lastCheckIsUp.Value);
 
         var @event = Event.Create(monitor.Id, dateTime.UtcNow, monitor.IntervalInMinutes, checkResult.IsUp, isImportant, checkResult.Message, checkResult.LatencyMilliseconds);
 
@@ -39,12 +39,12 @@ internal sealed class MonitorJob(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (!@event.IsUp && lastCheckIsUp)
+        if (!@event.IsUp && (!lastCheckIsUp.HasValue || lastCheckIsUp.Value))
         {
             await alertScheduler.ScheduleDownAlertAsync(monitor.Id, monitor.AlertDelayMinutes, 0, cancellationToken);
         }
 
-        if (@event.IsUp && !lastCheckIsUp)
+        if (@event.IsUp && lastCheckIsUp.HasValue && !lastCheckIsUp.Value)
         {
             await alertScheduler.ScheduleUpAlertAsync(monitor.Id, cancellationToken);
         }

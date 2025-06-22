@@ -38,7 +38,6 @@ public class ComponentMonitor : AggregateRoot
         AlertMessage = alertMessage;
         AlertDelayMinutes = alertDelayMinutes;
         AlertResendCycles = alertResendCycles;
-        IsUp = true;
     }
 
     public static ComponentMonitor Create(
@@ -139,7 +138,7 @@ public class ComponentMonitor : AggregateRoot
     public int AlertResendCycles { get; private set; } = 3;
     public bool IsActive { get; private set; } = true;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-    public bool IsUp { get; set; } = true;
+    public bool? IsUp { get; private set; }
     public Guid? GroupId { get; private set; }
     public Group? Group { get; }
     public virtual ICollection<Event> Events { get; set; } = [];

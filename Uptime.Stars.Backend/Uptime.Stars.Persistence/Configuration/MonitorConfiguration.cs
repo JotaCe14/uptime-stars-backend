@@ -72,7 +72,6 @@ internal sealed class MonitorConfiguration : IEntityTypeConfiguration<ComponentM
             .IsRequired();
 
         builder.Property(entity => entity.IsUp)
-            .HasDefaultValue(true)
             .IsRequired();
     }
 }

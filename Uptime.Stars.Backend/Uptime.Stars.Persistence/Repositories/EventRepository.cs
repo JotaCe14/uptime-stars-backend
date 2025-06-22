@@ -35,11 +35,6 @@ internal sealed class EventRepository(IDbContext dbContext) : IEventRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsFirstByMonitorIdAsync(Guid monitorId, CancellationToken cancellationToken = default)
-    {
-        return !await dbContext.Set<Event>().AnyAsync(entity => entity.MonitorId == monitorId, cancellationToken);
-    }
-
     public async Task<IReadOnlyCollection<Event>> GetLastByMonitorIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default)
     {
         return await dbContext.Set<Event>()

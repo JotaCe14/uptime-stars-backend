@@ -58,7 +58,7 @@ internal sealed class ReportService : IReportService
 
         worksheet.Cell(2, 2).Value = $"{dateFrom:dd/MM/yyyy} - {dateTo:dd/MM/yyyy}";
 
-        worksheet.Cell(9, 7).Value = (int)(dateTo - dateFrom).TotalHours;
+        worksheet.Cell(9, 7).Value = (int)(dateTo - dateFrom).TotalHours + 24;
 
         var categoryToColumn = new Dictionary<Category, int>
         {
@@ -99,7 +99,7 @@ internal sealed class ReportService : IReportService
 
             var downTime = TimeSpan.FromMinutes(group.Sum(@event => @event.NextCheckInMinutes));
 
-            worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"hh\:mm\:ss");
+            worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"h\:mm\:ss");
         }
 
         using var stream = new MemoryStream();

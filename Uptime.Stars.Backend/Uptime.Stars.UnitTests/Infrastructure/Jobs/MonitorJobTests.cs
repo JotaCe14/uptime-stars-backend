@@ -174,10 +174,6 @@ public class MonitorJobTests
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
 
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
-
         // Act
 
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
@@ -213,10 +209,6 @@ public class MonitorJobTests
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
 
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
-
         // Act
 
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
@@ -249,10 +241,6 @@ public class MonitorJobTests
         _dateTime
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
-
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
 
         // Act
 
@@ -289,10 +277,6 @@ public class MonitorJobTests
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
 
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
-
         // Act
 
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
@@ -325,10 +309,6 @@ public class MonitorJobTests
         _dateTime
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
-
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
 
         // Act
 
@@ -368,10 +348,6 @@ public class MonitorJobTests
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
 
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(false);
-
         // Act
 
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
@@ -409,10 +385,6 @@ public class MonitorJobTests
         _dateTime
             .UtcNow
             .ReturnsForAnyArgs(DateTime.UtcNow);
-
-        _eventRepository
-            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(true);
 
         // Act
 

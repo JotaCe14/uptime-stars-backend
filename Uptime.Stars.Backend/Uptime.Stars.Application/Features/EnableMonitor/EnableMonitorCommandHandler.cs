@@ -1,11 +1,15 @@
 ﻿using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Messaging;
+using Uptime.Stars.Application.Services;
 using Uptime.Stars.Domain.Core.Primitives;
 using Uptime.Stars.Domain.Core.Primitives.Result;
 using Uptime.Stars.Domain.Repositories;
 
 namespace Uptime.Stars.Application.Features.EnableMonitor;
-internal sealed class EnableMonitorCommandHandler(IMonitorRepository monitorRepository, IUnitOfWork unitOfWork) : ICommandHandler<EnableMonitorCommand, Result>
+internal sealed class EnableMonitorCommandHandler(
+    IMonitorRepository monitorRepository, 
+    IUnitOfWork unitOfWork,
+    IMonitorScheduler scheduler) : ICommandHandler<EnableMonitorCommand, Result>
 {
     public async Task<Result> Handle(EnableMonitorCommand request, CancellationToken cancellationToken)
     {
@@ -24,6 +28,8 @@ internal sealed class EnableMonitorCommandHandler(IMonitorRepository monitorRepo
         monitor.Enable();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await scheduler.ScheduleAsync(monitor.Id, monitor.IntervalInMinutes, cancellationToken);
 
         return Result.Success();
     }
