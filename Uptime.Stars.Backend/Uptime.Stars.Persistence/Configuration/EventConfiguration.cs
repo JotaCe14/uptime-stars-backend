@@ -21,6 +21,9 @@ internal sealed class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(entity => entity.TimestampUtc)
             .IsRequired();
 
+        builder.Property(entity => entity.NextCheckInMinutes)
+            .IsRequired();
+
         builder.Property(entity => entity.Message)
             .HasMaxLength(200);
 

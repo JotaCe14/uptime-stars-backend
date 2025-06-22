@@ -22,8 +22,7 @@ internal sealed class GenerateMonitorReportCommandHandler(
             .Include(entity => entity.Monitor)
             .ThenInclude(entity => entity.Group)
             .Where(entity =>
-                entity.IsImportant && !entity.FalsePositive &&
-                entity.Category != null && entity.MaintenanceType != null &&
+                !entity.IsUp && !entity.FalsePositive &&
                 entity.TimestampUtc >= DateTime.SpecifyKind(dateFrom, DateTimeKind.Utc) && entity.TimestampUtc <= DateTime.SpecifyKind(dateTo, DateTimeKind.Utc))
             .OrderBy(entity => entity.TimestampUtc)
             .ToListAsync(cancellationToken);

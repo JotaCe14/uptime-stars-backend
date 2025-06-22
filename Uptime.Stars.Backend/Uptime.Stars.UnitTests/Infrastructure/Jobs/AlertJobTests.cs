@@ -37,7 +37,7 @@ namespace Uptime.Stars.UnitTests.Infrastructure.Jobs
 
         private static Event GetEvent(bool isUp)
         {
-            return Event.Create(Guid.NewGuid(), DateTime.UtcNow, isUp, false, "msg", 100);
+            return Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1, isUp, false, "msg", 100);
         }
 
         [Fact]

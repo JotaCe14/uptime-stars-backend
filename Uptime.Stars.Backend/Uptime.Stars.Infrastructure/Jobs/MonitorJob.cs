@@ -31,7 +31,7 @@ internal sealed class MonitorJob(
 
         var isImportant = !checkResult.IsUp || (checkResult.IsUp && !lastCheckIsUp) || await eventRepository.IsFirstByMonitorIdAsync(monitor.Id, cancellationToken);
 
-        var @event = Event.Create(monitor.Id, dateTime.UtcNow, checkResult.IsUp, isImportant, checkResult.Message, checkResult.LatencyMilliseconds);
+        var @event = Event.Create(monitor.Id, dateTime.UtcNow, monitor.IntervalInMinutes, checkResult.IsUp, isImportant, checkResult.Message, checkResult.LatencyMilliseconds);
 
         monitor.Check(@event.IsUp);
 

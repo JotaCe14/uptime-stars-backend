@@ -44,9 +44,9 @@ public class EventServiceTests
         // Arrange
 
         IReadOnlyCollection <Event> events = [
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow, isUp: false)
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1, isUp: false)
         ];
 
         _dateTime.UtcNow.Returns(DateTime.UtcNow);
@@ -70,11 +70,11 @@ public class EventServiceTests
         // Arrange
 
         IReadOnlyCollection<Event> events = [
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow, isUp: false),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow, isUp: false),
-            Event.Create(Guid.NewGuid(), DateTime.UtcNow)
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1, isUp: false),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1, isUp: false),
+            Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1)
         ];
 
         _dateTime.UtcNow.Returns(DateTime.UtcNow);

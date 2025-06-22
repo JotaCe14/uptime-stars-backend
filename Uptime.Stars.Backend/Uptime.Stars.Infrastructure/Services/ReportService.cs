@@ -95,31 +95,7 @@ internal sealed class ReportService : IReportService
                 continue;
             }
 
-            var eventsOrdered = group.OrderBy(e => e.TimestampUtc).ToList();
-
-            var downTimeMs = 0L;
-
-            DateTime? lastDownTimestamp = null;
-
-            foreach (var @event in eventsOrdered)
-            {
-                if (!@event.IsUp)
-                {
-                    lastDownTimestamp ??= @event.TimestampUtc;
-
-                    downTimeMs += (long)(@event.TimestampUtc - lastDownTimestamp.Value).TotalMilliseconds;
-
-                    lastDownTimestamp = @event.TimestampUtc;
-                }
-                else if (lastDownTimestamp is not null)
-                {
-                    downTimeMs += (long)(@event.TimestampUtc - lastDownTimestamp.Value).TotalMilliseconds;
-
-                    lastDownTimestamp = null;
-                }
-            }
-
-            var downTime = TimeSpan.FromMilliseconds(downTimeMs);
+            var downTime = TimeSpan.FromMinutes(group.Sum(@event => @event.NextCheckInMinutes));
 
             worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"hh\:mm");
         }

@@ -37,7 +37,7 @@ public class SmtpAlertServiceTests
 
     private static Event GetEvent(bool isUp, string? message = null)
     {
-        return Event.Create(Guid.NewGuid(), DateTime.UtcNow, isUp, false, message ?? "test", 100);
+        return Event.Create(Guid.NewGuid(), DateTime.UtcNow, 1, isUp, false, message ?? "test", 100);
     }
 
     [Fact]
