@@ -17,11 +17,11 @@ internal sealed class UpdateEventCommandHandler(IEventRepository eventRepository
         }
 
         @event.Update(
-            request.FalsePositive,
             request.Category,
+            request.MaintenanceType,
+            request.FalsePositive,
             request.Note,
-            request.TicketId,
-            request.MaintenanceType);
+            request.TicketId);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

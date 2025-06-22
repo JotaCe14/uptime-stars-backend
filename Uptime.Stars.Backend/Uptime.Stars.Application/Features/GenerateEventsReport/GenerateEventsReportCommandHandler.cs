@@ -15,6 +15,6 @@ internal sealed class GenerateEventsReportCommandHandler(IDbContext dbContext, I
             .OrderByDescending(@event => @event.TimestampUtc)
             .ToListAsync(cancellationToken);
 
-        return reportService.GenerateReport(events);
+        return reportService.GenerateEventsReport(events);
     }
 }

@@ -29,4 +29,10 @@
     <ProjectReference Include="..\Uptime.Stars.Persistence\Uptime.Stars.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\ReportTemplate.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

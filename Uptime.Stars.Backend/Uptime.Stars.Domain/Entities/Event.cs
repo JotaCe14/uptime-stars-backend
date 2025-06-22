@@ -1,4 +1,5 @@
 ﻿using Uptime.Stars.Domain.Core.Primitives;
+using Uptime.Stars.Domain.Enums;
 
 namespace Uptime.Stars.Domain.Entities;
 public class Event : AggregateRoot
@@ -31,11 +32,11 @@ public class Event : AggregateRoot
     }
 
     public void Update(
+        Category? category,
+        MaintenanceType? maintenanceType,
         bool falsePositive = false,
-        string? category = "",
         string? note = "",
-        string? ticketId = "",
-        string? maintenanceType = "")
+        string? ticketId = "")
     {
         FalsePositive = falsePositive;
         Category = category;
@@ -45,15 +46,15 @@ public class Event : AggregateRoot
     }
 
     public Guid MonitorId { get; private set; }
-    public ComponentMonitor? Monitor { get; }
+    public ComponentMonitor Monitor { get; }
     public bool IsUp { get; private set; } = true;
     public bool IsImportant { get; set; } = false;
     public long? LatencyMilliseconds { get; private set; }
     public DateTime TimestampUtc { get; private set; } = DateTime.UtcNow;
     public string? Message { get; private set; }
     public bool FalsePositive { get; private set; } = false;
-    public string? Category { get; private set; } = "";
+    public Category? Category { get; private set; }
     public string? Note { get; private set; } = "";
     public string? TicketId { get; private set; } = "";
-    public string? MaintenanceType { get; set; } = "";
+    public MaintenanceType? MaintenanceType { get; set; }
 }

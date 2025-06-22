@@ -5,6 +5,7 @@ using Uptime.Stars.Application.Services;
 using Uptime.Stars.Contracts.Events;
 using Uptime.Stars.Contracts.Monitors;
 using Uptime.Stars.Domain.Entities;
+using Uptime.Stars.Domain.Enums;
 using Uptime.Stars.Domain.Repositories;
 using X.PagedList;
 using X.PagedList.EF;
@@ -24,6 +25,7 @@ internal sealed class GetMonitorsQueryHandler(
                     Description = monitor.Description ?? "",
                     GroupId = monitor.GroupId,
                     IsUp = monitor.IsUp,
+                    IntervalInMinutes = monitor.IntervalInMinutes,
                     Target = monitor.Target,
                     CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
                     IsActive = monitor.IsActive,
@@ -54,10 +56,10 @@ internal sealed class GetMonitorsQueryHandler(
                         @event.Message ?? "",
                         @event.LatencyMilliseconds ?? 0,
                         @event.FalsePositive,
-                        @event.Category ?? "",
+                        @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
                         @event.Note ?? "",
                         @event.TicketId ?? "",
-                        @event.MaintenanceType ?? "")).ToList();
+                        @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "")).ToList();
 
             monitor.Uptime24hPercentage = uptime24h.HasValue ? uptime24h.Value.ToString("0.##") + "%" : "";
 

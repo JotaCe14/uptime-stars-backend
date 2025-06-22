@@ -25,6 +25,7 @@ public static class DependencyInjection
             .AddScoped<MonitorJob>()
             .AddScoped<ICheckStrategyFactory, CheckStrategyFactory>()
             .AddScoped<IPingWrapper, PingWrapper>()
+            .AddScoped<ISmtpClientWrapper, SmtpClientWrapper>()
             .AddKeyedScoped<ICheckStrategy, HttpsGetCheckStrategy>(MonitorType.Https)
             .AddKeyedScoped<ICheckStrategy, PingCheckStrategy>(MonitorType.Ping)
             .AddTransient<IDateTime, MachineDateTime>()

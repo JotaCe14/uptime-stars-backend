@@ -31,7 +31,7 @@ internal interface IPingWrapper
     Task<PingReplyWrapper?> SendPingAsync(string host, int timeout);
 }
 
-public class PingWrapper : IPingWrapper
+internal class PingWrapper : IPingWrapper
 {
     public async Task<PingReplyWrapper?> SendPingAsync(string host, int timeout)
     {

@@ -3,5 +3,6 @@
 namespace Uptime.Stars.Application.Services;
 public interface IReportService
 {
-    byte[] GenerateReport(List<Event> events);
+    byte[] GenerateEventsReport(List<Event> events);
+    byte[] GenerateMonitorReport(List<Event> events, string dateFrom, string dateTo);
 }

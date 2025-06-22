@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Uptime.Stars.Application.Core.Abstractions.Data;
@@ -22,12 +21,11 @@ public class MonitorJobTests
     private readonly IEventRepository _eventRepository = Substitute.For<IEventRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly IAlertScheduler _alertScheduler = Substitute.For<IAlertScheduler>();
-    private readonly ILogger<MonitorJob> _logger = Substitute.For<ILogger<MonitorJob>>();
     private readonly MonitorJob _job;
 
     public MonitorJobTests()
     {
-        _job = new MonitorJob(_strategyFactory, _dateTime, _monitorRepository, _eventRepository, _unitOfWork, _alertScheduler, _logger);
+        _job = new MonitorJob(_strategyFactory, _dateTime, _monitorRepository, _eventRepository, _unitOfWork, _alertScheduler);
     }
 
     private static ComponentMonitor GetMonitor(
@@ -82,6 +80,7 @@ public class MonitorJobTests
             .ReturnsForAnyArgs(monitor);
 
         // Act
+
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
@@ -111,6 +110,7 @@ public class MonitorJobTests
         var act = async () => await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
+
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("No check strategy found for monitor type: Https");
     }
@@ -143,10 +143,287 @@ public class MonitorJobTests
         await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
+
         await _eventRepository.ReceivedWithAnyArgs(1).AddAsync(
             Arg.Any<Event>(),
             Arg.Any<CancellationToken>());
 
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_SchedulesDownAlert_WhenMonitorGoesDown()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(false, "Error"));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _alertScheduler.Received(1).ScheduleDownAlertAsync(monitor.Id, monitor.AlertDelayMinutes, 0, Arg.Any<CancellationToken>());
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleUpAlertAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_SchedulesUpAlert_WhenMonitorRecovers()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        monitor.Check(isUp: false);
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(true));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleDownAlertAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _alertScheduler.Received().ScheduleUpAlertAsync(monitor.Id, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_DoesNotScheduleAlerts_WhenLastStatusIsUpAndCheckIsUp()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(true));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleDownAlertAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleUpAlertAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_DoesNotScheduleAlerts_WhenLastStatusIsDownAndCheckIsDown()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        monitor.Check(isUp: false);
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(false));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleDownAlertAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _alertScheduler.DidNotReceiveWithAnyArgs().ScheduleUpAlertAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AddsImportantEvent_WhenEventIsDown()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(false));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _eventRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Event>(e => e.IsImportant),
+                Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AddsImportantEvent_WhenEventRecovers()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        monitor.Check(isUp: false);
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(true));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(false);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _eventRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Event>(e => e.IsImportant),
+                Arg.Any<CancellationToken>());
+    }
+
+
+
+    [Fact]
+    public async Task ExecuteAsync_AddsImportantEvent_WhenFirstEvent()
+    {
+        // Arrange
+
+        var monitor = GetMonitor();
+
+        _monitorRepository
+            .GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(monitor);
+
+        _strategyFactory
+            .GetStrategy(Arg.Any<MonitorType>())
+            .ReturnsForAnyArgs(_strategy);
+
+        _strategy
+            .CheckAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(new CheckResult(true));
+
+        _dateTime
+            .UtcNow
+            .ReturnsForAnyArgs(DateTime.UtcNow);
+
+        _eventRepository
+            .IsFirstByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(true);
+
+        // Act
+
+        await _job.ExecuteAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+
+        await _eventRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Event>(e => e.IsImportant),
+                Arg.Any<CancellationToken>());
     }
 }

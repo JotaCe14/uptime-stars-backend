@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Uptime.Stars.Application.Core.Abstractions.Data;
+﻿using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Application.Services;
 using Uptime.Stars.Domain.Entities;
@@ -13,8 +12,7 @@ internal sealed class MonitorJob(
     IMonitorRepository monitorRepository, 
     IEventRepository eventRepository, 
     IUnitOfWork unitOfWork,
-    IAlertScheduler alertScheduler,
-    ILogger<MonitorJob> logger)
+    IAlertScheduler alertScheduler)
 {
     public async Task ExecuteAsync(Guid monitorId, CancellationToken cancellationToken = default)
     {
@@ -26,8 +24,6 @@ internal sealed class MonitorJob(
         }
 
         var lastCheckIsUp = monitor.IsUp;
-
-        logger.LogInformation("Monitoring {MonitorId}", monitorId);
 
         var checkStrategy = checkStrategyFactory.GetStrategy(monitor.Type) ?? throw new InvalidOperationException($"No check strategy found for monitor type: {monitor.Type}");
 

@@ -8,6 +8,7 @@ using Uptime.Stars.Application.Core.Abstractions.Pagination;
 using Uptime.Stars.Application.Features.CreateMonitor;
 using Uptime.Stars.Application.Features.DisableMonitor;
 using Uptime.Stars.Application.Features.EnableMonitor;
+using Uptime.Stars.Application.Features.GenerateReport;
 using Uptime.Stars.Application.Features.GetMonitor;
 using Uptime.Stars.Application.Features.GetMonitors;
 using Uptime.Stars.Application.Features.RemoveMonitor;
@@ -112,6 +113,19 @@ public class MonitorEndpoint : IEndpoint
             .Produces<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)
             .Produces<ProblemDetails>(StatusCodes.Status424FailedDependency)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+
+        app
+            .MapGet("monitor/export", GenerateMonitorReport)
+            .WithName("Generate Monitor Report")
+            .WithSummary("Genereates a report from monitors")
+            .WithTags("export")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status409Conflict)
+            .Produces<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status424FailedDependency)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
     }
 
     public async Task<IResult> CreateMonitor(
@@ -149,9 +163,10 @@ public class MonitorEndpoint : IEndpoint
         ISender sender,
         int pageSize = 10,
         int pageNumber = 1,
+        int lastEventsLimit = 20,
         CancellationToken cancellationToken = default)
     {
-        var result = await sender.Send(new GetMonitorsQuery(pageSize, pageNumber), cancellationToken);
+        var result = await sender.Send(new GetMonitorsQuery(pageSize, pageNumber, lastEventsLimit), cancellationToken);
         return Results.Ok(new PagedList<MonitorResponse>(
            result,
            result.PageNumber,
@@ -191,5 +206,18 @@ public class MonitorEndpoint : IEndpoint
         var result = await sender.Send(new RemoveMonitorCommand(monitorId), cancellationToken);
         if (result.IsFailure) return Results.Problem(result.Error.ToProblemDetails());
         return Results.Ok();
+    }
+
+    public async Task<IResult> GenerateMonitorReport(
+        string dateFrom,
+        string dateTo,
+        ISender sender,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await sender.Send(new GenerateMonitorReportCommand(dateFrom, dateTo), cancellationToken);
+        if (result.IsFailure) return Results.Problem(result.Error.ToProblemDetails());
+        return Results.File(result.Value,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"monitor-{dateFrom}-{dateTo}.xlsx");
     }
 }
