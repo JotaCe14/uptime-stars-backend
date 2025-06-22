@@ -27,6 +27,6 @@ internal sealed class GenerateMonitorReportCommandHandler(
             .OrderBy(entity => entity.TimestampUtc)
             .ToListAsync(cancellationToken);
 
-        return reportService.GenerateMonitorReport(events, request.DateFrom, request.DateTo);
+        return reportService.GenerateMonitorReport(events, dateFrom, dateTo);
     }
 }

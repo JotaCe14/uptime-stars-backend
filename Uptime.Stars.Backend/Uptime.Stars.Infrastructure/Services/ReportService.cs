@@ -50,13 +50,15 @@ internal sealed class ReportService : IReportService
         return stream.ToArray();
     }
 
-    public byte[] GenerateMonitorReport(List<Event> events, string dateFrom, string dateTo)
+    public byte[] GenerateMonitorReport(List<Event> events, DateTime dateFrom, DateTime dateTo)
     {
         using var workbook = new XLWorkbook("Resources/ReportTemplate.xlsx");
 
         var worksheet = workbook.Worksheet("SLA General");
 
-        worksheet.Cell(2, 2).Value = $"{dateFrom} - {dateTo}";
+        worksheet.Cell(2, 2).Value = $"{dateFrom:dd/MM/yyyy} - {dateTo:dd/MM/yyyy}";
+
+        worksheet.Cell(9, 7).Value = (int)(dateTo - dateFrom).TotalHours;
 
         var categoryToColumn = new Dictionary<Category, int>
         {
@@ -97,7 +99,7 @@ internal sealed class ReportService : IReportService
 
             var downTime = TimeSpan.FromMinutes(group.Sum(@event => @event.NextCheckInMinutes));
 
-            worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"hh\:mm");
+            worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"hh\:mm\:ss");
         }
 
         using var stream = new MemoryStream();
