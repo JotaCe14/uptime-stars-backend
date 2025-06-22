@@ -99,7 +99,7 @@ internal sealed class ReportService : IReportService
 
             var downTime = TimeSpan.FromMinutes(group.Sum(@event => @event.NextCheckInMinutes));
 
-            worksheet.Cell(baseRow + offset, col).Value = downTime.ToString(@"h\:mm\:ss");
+            worksheet.Cell(baseRow + offset, col).Value = downTime;
         }
 
         using var stream = new MemoryStream();
