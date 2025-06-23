@@ -4,6 +4,7 @@ public record EventResponse(
     Guid Id,
     string TimestampUtc,
     bool IsUp,
+    bool IsImportant,
     string Message,
     long LatencyMilliseconds,
     bool FalsePositive,

@@ -53,6 +53,7 @@ internal sealed class GetMonitorsQueryHandler(
                         @event.Id,
                         @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                         @event.IsUp,
+                        @event.IsImportant,
                         @event.Message ?? "",
                         @event.LatencyMilliseconds ?? 0,
                         @event.FalsePositive,
