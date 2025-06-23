@@ -5,12 +5,12 @@ on:
     branches: [ master ]
     paths:
       - 'Uptime.Stars.Backend/Uptime.Stars.Monitor/**'
-      - '.github/workflows/ci-monitor.yaml'
+      - '.github/workflows/ci-worker.yaml'
   pull_request:
     branches: [ master ]
     paths:
       - 'Uptime.Stars.Backend/Uptime.Stars.Monitor/**'
-      - '.github/workflows/ci-monitor.yaml'
+      - '.github/workflows/ci-worker.yaml'
 
 jobs:
   build-test-sas-publish:
