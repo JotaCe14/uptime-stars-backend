@@ -1,0 +1,62 @@
+name: CI Uptime.Stars.Monitor
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'Uptime.Stars.Backend/Uptime.Stars.Monitor/**'
+      - '.github/workflows/ci-monitor.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'Uptime.Stars.Backend/Uptime.Stars.Monitor/**'
+      - '.github/workflows/ci-monitor.yml'
+
+jobs:
+  build-test-sas-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_VERSION: '8.0.x'
+      DOCKER_IMAGE: jotace14/uptime-stars-monitor
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore Uptime.Stars.Backend/Uptime.Stars.Monitor
+
+      - name: Build
+        run: dotnet build Uptime.Stars.Backend/Uptime.Stars.Monitor --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test Uptime.Stars.Backend/Uptime.Stars.Monitor --no-build --configuration Release
+
+      - name: Run Security Analysis (SAS) with CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -f Uptime.Stars.Backend/Uptime.Stars.Monitor/Dockerfile \
+            -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} \
+            Uptime.Stars.Backend
+
+      - name: Push Docker image
+        run: docker push ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
