@@ -27,7 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\" />
+    <Folder Include="Application\Features\CreateGroup\" />
+    <Folder Include="Application\Features\DisableMonitor\" />
+    <Folder Include="Application\Features\GenerateMonitorReport\" />
+    <Folder Include="Application\Features\GetGroup\" />
   </ItemGroup>
 
 </Project>

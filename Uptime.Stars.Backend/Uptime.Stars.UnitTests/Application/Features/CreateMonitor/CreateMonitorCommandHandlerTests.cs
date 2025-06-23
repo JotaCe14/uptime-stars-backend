@@ -73,7 +73,22 @@ public class CreateMonitorCommandHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBe(Guid.Empty);
 
-        await _monitorRepository.Received(1).AddAsync(Arg.Any<ComponentMonitor>(), Arg.Any<CancellationToken>());
+        await _monitorRepository.Received(1).AddAsync(Arg.Is<ComponentMonitor>(monitor => 
+            monitor.Name == command.Name &&
+            monitor.Description == command.Description &&
+            monitor.GroupId == command.GroupId &&
+            monitor.Type == command.Type &&
+            monitor.AlertEmails.SequenceEqual(command.AlertEmails) &&
+            monitor.IntervalInMinutes == command.IntervalInMinutes &&
+            monitor.TiemoutInMilliseconds == command.TiemoutInMilliseconds &&
+            monitor.RequestHeaders.SequenceEqual(command.RequestHeaders) &&
+            monitor.SearchMode == command.SearchMode &&
+            monitor.ExpectedText == command.ExpectedText &&
+            monitor.AlertDelayMinutes == command.AlertDelayMinutes &&
+            monitor.AlertMessage == command.AlertMessage &&
+            monitor.AlertResendCycles == command.AlertResendCycles
+        ), Arg.Any<CancellationToken>());
+
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
