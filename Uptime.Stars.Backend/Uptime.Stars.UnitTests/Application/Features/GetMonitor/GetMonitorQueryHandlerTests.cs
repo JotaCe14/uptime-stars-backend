@@ -74,6 +74,10 @@ public class GetMonitorQueryHandlerTests
             .ReturnsForAnyArgs(monitor);
 
         _eventRepository
+            .GetLastByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(events);
+
+        _eventRepository
             .GetLastImportantByMonitorIdAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(events);
 
@@ -101,6 +105,7 @@ public class GetMonitorQueryHandlerTests
         result.Value.Target.Should().Be("http://test.pe");
         result.Value.IsActive.Should().BeTrue();
         result.Value.LastEvents.Should().HaveCount(1);
+        result.Value.LastImportantEvents.Should().HaveCount(1);
         result.Value.Uptime24hPercentage.Should().Be("99.5%");
         result.Value.Uptime30dPercentage.Should().Be("98.1%");
     }

@@ -14,6 +14,7 @@ public class MonitorResponse
     public bool IsActive { get; set; }
     public int IntervalInMinutes { get; set; }
     public IReadOnlyCollection<EventResponse>? LastEvents { get; set; }
+    public IReadOnlyCollection<EventResponse>? LastImportantEvents { get; set; }
     public string Uptime24hPercentage { get; set; } = "";
     public string Uptime30dPercentage { get; set; } = "";
 }

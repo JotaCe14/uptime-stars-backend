@@ -23,7 +23,9 @@ internal sealed class GetMonitorQueryHandler(
             return Result.Failure<MonitorResponse>(Error.Failure("GetMonitor.Handle", "Monitor not found"));
         }
 
-        var lastEvents = await eventRepository.GetLastImportantByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
+        var lastImportantEvents = await eventRepository.GetLastImportantByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
+
+        var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
         var uptime24h = await eventService.GetUptimePercentageLastSince(
             monitor.Id, 
@@ -47,6 +49,18 @@ internal sealed class GetMonitorQueryHandler(
             CreatedAtUtc = monitor.CreatedAt.ToString(DateTimeFormats.DefaultFormat),
             IsActive = monitor.IsActive,
             LastEvents = lastEvents.Select(@event => new EventResponse(
+                @event.Id,
+                @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
+                @event.IsUp,
+                @event.IsImportant,
+                @event.Message ?? "",
+                @event.LatencyMilliseconds ?? 0,
+                @event.FalsePositive,
+                @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
+                @event.Note ?? "",
+                @event.TicketId ?? "",
+                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "")).ToList(),
+            LastImportantEvents = lastImportantEvents.Select(@event => new EventResponse(
                 @event.Id,
                 @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                 @event.IsUp,
