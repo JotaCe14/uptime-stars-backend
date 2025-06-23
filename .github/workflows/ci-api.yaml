@@ -41,7 +41,10 @@ jobs:
       - name: Run Security Analysis (SAS) with CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: csharp
+          languages: csharp        
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
