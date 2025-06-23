@@ -37,7 +37,7 @@ internal sealed class GetMonitorsQueryHandler(
 
         foreach (var monitor in monitors)
         {
-            var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
+            var lastImportantEvents = await eventRepository.GetLastImportantByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
             var uptime24h = await eventService.GetUptimePercentageLastSince(
                 monitor.Id,
@@ -49,7 +49,7 @@ internal sealed class GetMonitorsQueryHandler(
                 TimeSpan.FromDays(30),
                 cancellationToken);
 
-            monitor.LastEvents = lastEvents.Select(@event => new EventResponse(
+            monitor.LastImportantEvents = lastImportantEvents.Select(@event => new EventResponse(
                         @event.Id,
                         @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                         @event.IsUp,
