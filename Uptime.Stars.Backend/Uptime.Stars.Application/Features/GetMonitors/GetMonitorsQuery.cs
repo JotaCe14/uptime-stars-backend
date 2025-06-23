@@ -4,4 +4,4 @@ using X.PagedList;
 
 namespace Uptime.Stars.Application.Features.GetMonitors;
 
-public record GetMonitorsQuery(int PageSize, int PageNumber, int LastEventsLimit = 20) : IQuery<IPagedList<MonitorResponse>>;
+public record GetMonitorsQuery(int PageSize, int PageNumber, int LastEventsLimit = 50) : IQuery<IPagedList<MonitorResponse>>;
