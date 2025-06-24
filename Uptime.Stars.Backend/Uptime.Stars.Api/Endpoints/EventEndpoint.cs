@@ -31,7 +31,7 @@ public class EventEndpoint : IEndpoint
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
         app
-            .MapGet("event/{monitorId:guid?}", GetImportantEvents)
+            .MapGet("event", GetImportantEvents)
             .WithName("Get events")
             .WithSummary("Gets the events from a monitor or in total")
             .WithTags("get")
@@ -71,7 +71,7 @@ public class EventEndpoint : IEndpoint
         ISender sender,
         int pageSize = 10,
         int pageNumber = 1,
-        Guid? monitorId = default,
+        Guid? monitorId = null,
         CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(new GetImportantEventsQuery(pageSize, pageNumber, monitorId), cancellationToken);
