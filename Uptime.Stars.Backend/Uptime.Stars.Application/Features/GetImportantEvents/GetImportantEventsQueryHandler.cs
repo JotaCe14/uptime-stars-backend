@@ -29,6 +29,7 @@ internal sealed class GetImportantEventsQueryHandler(IDbContext dbContext) : IQu
                         @event.Note ?? "",
                         @event.TicketId ?? "",
                         @event.MaintenanceType == null ? "" : @event.MaintenanceType == MaintenanceType.Emergency ? "Emergency" : "Planned",
+                        @event.Monitor.Id,
                         @event.Monitor.Name))
             .ToPagedListAsync(request.PageNumber, request.PageSize, default, cancellationToken);
     }

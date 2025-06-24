@@ -12,4 +12,5 @@ public record EventResponse(
     string Note,
     string TicketId,
     string MaintenanceType,
+    Guid MonitorId,
     string MonitorName);
