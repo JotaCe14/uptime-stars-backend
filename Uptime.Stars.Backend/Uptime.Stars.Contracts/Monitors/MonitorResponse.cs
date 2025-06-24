@@ -23,7 +23,6 @@ public class MonitorResponse
     public int AlertDelayMinutes { get; set; } = 0;
     public int AlertResendCycles { get;  set; } = 3;
     public IReadOnlyCollection<EventResponse>? LastEvents { get; set; }
-    public IReadOnlyCollection<EventResponse>? LastImportantEvents { get; set; }
     public string Uptime24hPercentage { get; set; } = "";
     public string Uptime30dPercentage { get; set; } = "";
 }

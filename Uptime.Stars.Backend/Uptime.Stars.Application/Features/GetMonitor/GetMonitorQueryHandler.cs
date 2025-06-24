@@ -17,13 +17,11 @@ internal sealed class GetMonitorQueryHandler(
     public async Task<Result<MonitorResponse>> Handle(GetMonitorQuery request, CancellationToken cancellationToken)
     {
         var monitor = await monitorRepository.GetByIdAsync(request.MonitorId, cancellationToken);
-        
+
         if (monitor is null)
         {
             return Result.Failure<MonitorResponse>(Error.Failure("GetMonitor.Handle", "Monitor not found"));
         }
-
-        var lastImportantEvents = await eventRepository.GetLastImportantByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
         var lastEvents = await eventRepository.GetLastByMonitorIdAsync(monitor.Id, request.LastEventsLimit, cancellationToken);
 
@@ -58,20 +56,6 @@ internal sealed class GetMonitorQueryHandler(
             AlertDelayMinutes = monitor.AlertDelayMinutes,
             AlertResendCycles = monitor.AlertResendCycles,
             LastEvents = lastEvents.Select(@event => new EventResponse(
-                @event.Id,
-                @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
-                @event.IsUp,
-                @event.IsImportant,
-                @event.Message ?? "",
-                @event.LatencyMilliseconds ?? 0,
-                @event.FalsePositive,
-                @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
-                @event.Note ?? "",
-                @event.TicketId ?? "",
-                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "",
-                monitor.Id,
-                monitor.Name)).ToList(),
-            LastImportantEvents = lastImportantEvents.Select(@event => new EventResponse(
                 @event.Id,
                 @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
                 @event.IsUp,

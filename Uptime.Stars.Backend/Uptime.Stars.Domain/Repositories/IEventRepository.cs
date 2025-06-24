@@ -7,5 +7,4 @@ public interface IEventRepository
     Task<Event?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<Event>> GetLastByMonitorIdAsync(Guid monitorId, int limit = 50, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<Event>> GetLastByMonitorIdSinceAsync(Guid monitorId, DateTime sinceDateTime, CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<Event>> GetLastImportantByMonitorIdAsync(Guid monitorId, int limit = 20, CancellationToken cancellationToken = default);
 }
