@@ -13,7 +13,7 @@ internal sealed class GetImportantEventsQueryHandler(IDbContext dbContext) : IQu
     public async Task<IPagedList<EventResponse>> Handle(GetImportantEventsQuery request, CancellationToken cancellationToken)
     {
         return await dbContext.Set<Event>()
-            .Where(entity => entity.IsImportant && (request.MonitorId == Guid.Empty || entity.MonitorId == request.MonitorId))
+            .Where(entity => entity.IsImportant && (request.MonitorId == null || entity.MonitorId == request.MonitorId))
             .OrderByDescending(entity => entity.TimestampUtc)
             .Select(@event => new EventResponse(
                         @event.Id,
