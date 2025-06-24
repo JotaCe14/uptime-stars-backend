@@ -98,6 +98,7 @@ internal sealed class ReportService : IReportService
             eventsWorksheet.Cell(row, 11).Value = @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType);
         }
 
+        eventsWorksheet.Columns().AdjustToContents();
 
         var categoryToColumn = new Dictionary<Category, int>
         {

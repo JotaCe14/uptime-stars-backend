@@ -14,19 +14,19 @@ internal sealed class GenerateMonitorReportCommandHandler(
 {
     public async Task<Result<byte[]>> Handle(GenerateMonitorReportCommand request, CancellationToken cancellationToken)
     {
-        var dateFrom = DateTime.ParseExact(request.DateFrom, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        var dateFrom = DateTime.ParseExact(request.DateFrom, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date;
 
-        var dateTo = DateTime.ParseExact(request.DateTo, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        var dateTo = DateTime.ParseExact(request.DateTo, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date.AddDays(1);
 
         var events = await dbContext.Set<Event>()
             .Include(entity => entity.Monitor)
             .ThenInclude(entity => entity.Group)
             .Where(entity =>
                 !entity.IsUp && !entity.FalsePositive &&
-                entity.TimestampUtc >= DateTime.SpecifyKind(dateFrom, DateTimeKind.Utc) && entity.TimestampUtc <= DateTime.SpecifyKind(dateTo, DateTimeKind.Utc))
+                entity.TimestampUtc >= DateTime.SpecifyKind(dateFrom, DateTimeKind.Utc) && entity.TimestampUtc < DateTime.SpecifyKind(dateTo, DateTimeKind.Utc))
             .OrderBy(entity => entity.TimestampUtc)
             .ToListAsync(cancellationToken);
 
-        return reportService.GenerateMonitorReport(events, dateFrom, dateTo);
+        return reportService.GenerateMonitorReport(events, dateFrom, dateTo.AddDays(-1));
     }
 }
