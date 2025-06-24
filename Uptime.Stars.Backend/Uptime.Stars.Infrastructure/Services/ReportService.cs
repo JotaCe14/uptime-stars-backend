@@ -106,6 +106,50 @@ internal sealed class ReportService : IReportService
             worksheet.Cell(baseRow + offset, col).Value = downTime;
         }
 
+        var groupedEventsByGroup = events
+            .GroupBy(@event => new
+            {
+                Group = @event.Monitor.Group?.Name
+            });
+
+        foreach ( var group in groupedEventsByGroup )
+        {
+            var groupWorkSheet = workbook.Worksheets.Add(group.Key.Group ?? "Ungrouped");
+
+            groupWorkSheet.Cell(1, 1).Value = "TimestampUtc";
+            groupWorkSheet.Cell(1, 2).Value = "Status";
+            groupWorkSheet.Cell(1, 3).Value = "System";
+            groupWorkSheet.Cell(1, 4).Value = "Component";
+            groupWorkSheet.Cell(1, 5).Value = "Latency (ms)";
+            groupWorkSheet.Cell(1, 6).Value = "Message";
+            groupWorkSheet.Cell(1, 7).Value = "FalsePositive";
+            groupWorkSheet.Cell(1, 8).Value = "Category";
+            groupWorkSheet.Cell(1, 9).Value = "Note";
+            groupWorkSheet.Cell(1, 10).Value = "TicketId";
+            groupWorkSheet.Cell(1, 11).Value = "MaintenanceType";
+
+            for (int i = 0; i < events.Count; i++)
+            {
+                var @event = events[i];
+
+                var row = i + 2;
+
+                groupWorkSheet.Cell(row, 1).Value = @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat);
+                groupWorkSheet.Cell(row, 2).Value = @event.IsUp ? "Up ✅" : "Down ⚠️";
+                groupWorkSheet.Cell(row, 3).Value = @event.Monitor.Group?.Name ?? "Ungrouped";
+                groupWorkSheet.Cell(row, 4).Value = @event.Monitor.Name;
+                groupWorkSheet.Cell(row, 5).Value = @event.LatencyMilliseconds ?? 0;
+                groupWorkSheet.Cell(row, 6).Value = @event.Message ?? "";
+                groupWorkSheet.Cell(row, 7).Value = @event.FalsePositive ? "True" : "False";
+                groupWorkSheet.Cell(row, 8).Value = @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category);
+                groupWorkSheet.Cell(row, 9).Value = @event.Note ?? "";
+                groupWorkSheet.Cell(row, 10).Value = @event.TicketId ?? "";
+                groupWorkSheet.Cell(row, 11).Value = @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType);
+            }
+
+            groupWorkSheet.Columns().AdjustToContents();
+        }
+
         using var stream = new MemoryStream();
 
         workbook.SaveAs(stream);
