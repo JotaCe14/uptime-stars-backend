@@ -128,9 +128,11 @@ internal sealed class ReportService : IReportService
             groupWorkSheet.Cell(1, 10).Value = "TicketId";
             groupWorkSheet.Cell(1, 11).Value = "MaintenanceType";
 
-            for (int i = 0; i < events.Count; i++)
+            var eventsInGroup = group.ToList();
+
+            for (int i = 0; i < eventsInGroup.Count; i++)
             {
-                var @event = events[i];
+                var @event = eventsInGroup[i];
 
                 var row = i + 2;
 
