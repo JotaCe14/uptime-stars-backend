@@ -13,6 +13,15 @@ public class MonitorResponse
     public string CreatedAtUtc { get; set; } = "";
     public bool IsActive { get; set; }
     public int IntervalInMinutes { get; set; }
+    public int TiemoutInMilliseconds { get; set; }
+    public int Type { get; set; }
+    public string[] RequestHeaders { get; set; } = [];
+    public int? SearchMode { get; set; }
+    public string? ExpectedText { get; set; }
+    public string[] AlertEmails { get; set; } = [];
+    public string? AlertMessage { get; set; }
+    public int AlertDelayMinutes { get; set; } = 0;
+    public int AlertResendCycles { get;  set; } = 3;
     public IReadOnlyCollection<EventResponse>? LastEvents { get; set; }
     public IReadOnlyCollection<EventResponse>? LastImportantEvents { get; set; }
     public string Uptime24hPercentage { get; set; } = "";
