@@ -123,6 +123,7 @@ internal sealed class ReportService : IReportService
         };
 
         var groupedEvents = events
+            .Where(e => e.Category != null && e.MaintenanceType != null && e.Monitor.Group?.Name != null)
             .GroupBy(@event => new
             {
                 @event.Category,
@@ -132,12 +133,12 @@ internal sealed class ReportService : IReportService
 
         foreach (var group in groupedEvents)
         {
-            if (!categoryToColumn.TryGetValue(group.Key.Category ?? default, out var col) ||
-                !maintenanceTypeToBaseRow.TryGetValue(group.Key.MaintenanceType ?? default, out var baseRow) ||
-                !groupToRowOffset.TryGetValue(group.Key.Group ?? "", out var offset))
-            {
+            if (!categoryToColumn.TryGetValue(group.Key.Category.Value, out var col))
                 continue;
-            }
+            if (!maintenanceTypeToBaseRow.TryGetValue(group.Key.MaintenanceType.Value, out var baseRow))
+                continue;
+            if (!groupToRowOffset.TryGetValue(group.Key.Group, out var offset))
+                continue;
 
             var downTime = TimeSpan.FromMinutes(group.Sum(@event => @event.NextCheckInMinutes));
 
