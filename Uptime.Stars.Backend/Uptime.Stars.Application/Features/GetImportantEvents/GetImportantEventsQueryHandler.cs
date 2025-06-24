@@ -1,4 +1,5 @@
-﻿using Uptime.Stars.Application.Core.Abstractions.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Uptime.Stars.Application.Core.Abstractions.Data;
 using Uptime.Stars.Application.Core.Abstractions.Messaging;
 using Uptime.Stars.Application.Core.Abstractions.Time;
 using Uptime.Stars.Contracts.Events;
@@ -14,6 +15,7 @@ internal sealed class GetImportantEventsQueryHandler(IDbContext dbContext) : IQu
     {
         return await dbContext.Set<Event>()
             .Where(entity => entity.IsImportant && (request.MonitorId == null || entity.MonitorId == request.MonitorId))
+            .Include(entity => entity.Monitor)
             .OrderByDescending(entity => entity.TimestampUtc)
             .Select(@event => new EventResponse(
                         @event.Id,
@@ -26,7 +28,8 @@ internal sealed class GetImportantEventsQueryHandler(IDbContext dbContext) : IQu
                         @event.Category == null ? "" : @event.Category == Category.Internal ? "Internal" : "External",
                         @event.Note ?? "",
                         @event.TicketId ?? "",
-                        @event.MaintenanceType == null ? "" : @event.MaintenanceType == MaintenanceType.Emergency ? "Emergency" : "Planned"))
+                        @event.MaintenanceType == null ? "" : @event.MaintenanceType == MaintenanceType.Emergency ? "Emergency" : "Planned",
+                        @event.Monitor.Name))
             .ToPagedListAsync(request.PageNumber, request.PageSize, default, cancellationToken);
     }
 }

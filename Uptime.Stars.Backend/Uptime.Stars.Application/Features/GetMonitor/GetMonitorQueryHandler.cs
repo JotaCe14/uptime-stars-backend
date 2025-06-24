@@ -68,7 +68,8 @@ internal sealed class GetMonitorQueryHandler(
                 @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
                 @event.Note ?? "",
                 @event.TicketId ?? "",
-                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "")).ToList(),
+                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "",
+                monitor.Name)).ToList(),
             LastImportantEvents = lastImportantEvents.Select(@event => new EventResponse(
                 @event.Id,
                 @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat),
@@ -80,7 +81,8 @@ internal sealed class GetMonitorQueryHandler(
                 @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
                 @event.Note ?? "",
                 @event.TicketId ?? "",
-                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "")).ToList(),
+                @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "",
+                monitor.Name)).ToList(),
             Uptime24hPercentage = uptime24h.HasValue ? uptime24h.Value.ToString("0.##") + "%" : "",
             Uptime30dPercentage = uptime30d.HasValue ? uptime30d.Value.ToString("0.##") + "%" : ""
         };

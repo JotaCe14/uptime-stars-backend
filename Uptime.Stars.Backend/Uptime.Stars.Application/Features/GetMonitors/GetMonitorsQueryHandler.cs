@@ -60,7 +60,8 @@ internal sealed class GetMonitorsQueryHandler(
                         @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
                         @event.Note ?? "",
                         @event.TicketId ?? "",
-                        @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "")).ToList();
+                        @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? "",
+                        monitor.Name)).ToList();
 
             monitor.Uptime24hPercentage = uptime24h.HasValue ? uptime24h.Value.ToString("0.##") + "%" : "";
 

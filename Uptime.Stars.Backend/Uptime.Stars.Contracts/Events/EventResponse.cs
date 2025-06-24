@@ -11,4 +11,5 @@ public record EventResponse(
     string Category,
     string Note,
     string TicketId,
-    string MaintenanceType);
+    string MaintenanceType,
+    string MonitorName);
