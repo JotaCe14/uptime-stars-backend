@@ -23,10 +23,10 @@ internal sealed class GetImportantEventsQueryHandler(IDbContext dbContext) : IQu
                         @event.Message ?? "",
                         @event.LatencyMilliseconds ?? 0,
                         @event.FalsePositive,
-                        @event.Category == null ? "" : Enum.GetName(typeof(Category), @event.Category) ?? "",
+                        @event.Category == null ? "" : @event.Category == Category.Internal ? "Internal" : "External",
                         @event.Note ?? "",
                         @event.TicketId ?? "",
-                        @event.MaintenanceType == null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType) ?? ""))
+                        @event.MaintenanceType == null ? "" : @event.MaintenanceType == MaintenanceType.Emergency ? "Emergency" : "Planned"))
             .ToPagedListAsync(request.PageNumber, request.PageSize, default, cancellationToken);
     }
 }
