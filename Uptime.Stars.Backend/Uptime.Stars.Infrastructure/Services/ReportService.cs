@@ -15,13 +15,15 @@ internal sealed class ReportService : IReportService
 
         worksheet.Cell(1, 1).Value = "TimestampUtc";
         worksheet.Cell(1, 2).Value = "Status";
-        worksheet.Cell(1, 3).Value = "Latency (ms)";
-        worksheet.Cell(1, 4).Value = "Message";
-        worksheet.Cell(1, 5).Value = "FalsePositive";
-        worksheet.Cell(1, 6).Value = "Category";
-        worksheet.Cell(1, 7).Value = "Note";
-        worksheet.Cell(1, 8).Value = "TicketId";
-        worksheet.Cell(1, 9).Value = "MaintenanceType";
+        worksheet.Cell(1, 3).Value = "System";
+        worksheet.Cell(1, 4).Value = "Component";
+        worksheet.Cell(1, 5).Value = "Latency (ms)";
+        worksheet.Cell(1, 6).Value = "Message";
+        worksheet.Cell(1, 7).Value = "FalsePositive";
+        worksheet.Cell(1, 8).Value = "Category";
+        worksheet.Cell(1, 9).Value = "Note";
+        worksheet.Cell(1, 10).Value = "TicketId";
+        worksheet.Cell(1, 11).Value = "MaintenanceType";
 
 
         for (int i = 0; i < events.Count; i++)
@@ -32,13 +34,15 @@ internal sealed class ReportService : IReportService
 
             worksheet.Cell(row, 1).Value = @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat);
             worksheet.Cell(row, 2).Value = @event.IsUp ? "Up ✅" : "Down ⚠️";
-            worksheet.Cell(row, 3).Value = @event.LatencyMilliseconds ?? 0;
-            worksheet.Cell(row, 4).Value = @event.Message ?? "";
-            worksheet.Cell(row, 5).Value = @event.FalsePositive ? "True" : "False";
-            worksheet.Cell(row, 6).Value = @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category);
-            worksheet.Cell(row, 7).Value = @event.Note ?? "";
-            worksheet.Cell(row, 8).Value = @event.TicketId ?? "";
-            worksheet.Cell(row, 9).Value = @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType);
+            worksheet.Cell(row, 3).Value = @event.Monitor.Group?.Name ?? "Ungrouped";
+            worksheet.Cell(row, 4).Value = @event.Monitor.Name;
+            worksheet.Cell(row, 5).Value = @event.LatencyMilliseconds ?? 0;
+            worksheet.Cell(row, 6).Value = @event.Message ?? "";
+            worksheet.Cell(row, 7).Value = @event.FalsePositive ? "True" : "False";
+            worksheet.Cell(row, 8).Value = @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category);
+            worksheet.Cell(row, 9).Value = @event.Note ?? "";
+            worksheet.Cell(row, 10).Value = @event.TicketId ?? "";
+            worksheet.Cell(row, 11).Value = @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType);
         }
 
         worksheet.Columns().AdjustToContents();
