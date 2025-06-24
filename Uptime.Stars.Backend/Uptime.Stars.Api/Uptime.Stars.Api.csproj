@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <None Update="Resources\ReportTemplate.xlsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
