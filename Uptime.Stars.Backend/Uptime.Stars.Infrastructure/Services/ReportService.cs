@@ -64,6 +64,41 @@ internal sealed class ReportService : IReportService
 
         worksheet.Cell(9, 7).Value = (int)(dateTo - dateFrom).TotalHours + 24;
 
+        var eventsWorksheet = workbook.Worksheets.Add("Events");
+
+        eventsWorksheet.Cell(1, 1).Value = "TimestampUtc";
+        eventsWorksheet.Cell(1, 2).Value = "Status";
+        eventsWorksheet.Cell(1, 3).Value = "System";
+        eventsWorksheet.Cell(1, 4).Value = "Component";
+        eventsWorksheet.Cell(1, 5).Value = "Latency (ms)";
+        eventsWorksheet.Cell(1, 6).Value = "Message";
+        eventsWorksheet.Cell(1, 7).Value = "FalsePositive";
+        eventsWorksheet.Cell(1, 8).Value = "Category";
+        eventsWorksheet.Cell(1, 9).Value = "Note";
+        eventsWorksheet.Cell(1, 10).Value = "TicketId";
+        eventsWorksheet.Cell(1, 11).Value = "MaintenanceType";
+
+
+        for (int i = 0; i < events.Count; i++)
+        {
+            var @event = events[i];
+
+            var row = i + 2;
+
+            eventsWorksheet.Cell(row, 1).Value = @event.TimestampUtc.ToString(DateTimeFormats.DefaultFormat);
+            eventsWorksheet.Cell(row, 2).Value = @event.IsUp ? "Up ✅" : "Down ⚠️";
+            eventsWorksheet.Cell(row, 3).Value = @event.Monitor.Group?.Name ?? "Ungrouped";
+            eventsWorksheet.Cell(row, 4).Value = @event.Monitor.Name;
+            eventsWorksheet.Cell(row, 5).Value = @event.LatencyMilliseconds ?? 0;
+            eventsWorksheet.Cell(row, 6).Value = @event.Message ?? "";
+            eventsWorksheet.Cell(row, 7).Value = @event.FalsePositive ? "True" : "False";
+            eventsWorksheet.Cell(row, 8).Value = @event.Category is null ? "" : Enum.GetName(typeof(Category), @event.Category);
+            eventsWorksheet.Cell(row, 9).Value = @event.Note ?? "";
+            eventsWorksheet.Cell(row, 10).Value = @event.TicketId ?? "";
+            eventsWorksheet.Cell(row, 11).Value = @event.MaintenanceType is null ? "" : Enum.GetName(typeof(MaintenanceType), @event.MaintenanceType);
+        }
+
+
         var categoryToColumn = new Dictionary<Category, int>
         {
             [Category.Internal] = 3,
