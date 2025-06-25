@@ -14,7 +14,10 @@ builder.Services.AddInfrastructureServices();
 
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("Uptime"));
 
-builder.Services.AddHangfireServer();
+if (Environment.GetEnvironmentVariable("ENABLED") != "false")
+{
+    builder.Services.AddHangfireServer();
+}
 
 var host = builder.Build();
 
