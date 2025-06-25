@@ -58,7 +58,7 @@ app.UseHealthChecks("/healthz", new HealthCheckOptions
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard(options: new DashboardOptions() { Authorization = [] });
 
 var apiVersionSet = app
      .NewApiVersionSet()
